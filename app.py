@@ -7,21 +7,41 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Resolve root directory whether invoked from root or api/ subdirectory
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if os.path.basename(CURRENT_DIR) == "api":
+    ROOT_DIR = os.path.dirname(CURRENT_DIR)
+else:
+    ROOT_DIR = CURRENT_DIR
 
 app = Flask(
     __name__,
-    template_folder=os.path.join(BASE_DIR, "templates"),
-    static_folder=os.path.join(BASE_DIR, "static")
+    template_folder=os.path.join(ROOT_DIR, "templates"),
+    static_folder=os.path.join(ROOT_DIR, "static")
 )
 
-CSV_PATH = os.path.join(BASE_DIR, "msg.csv")
+# WSGI Middleware for Vercel Serverless routing
+class VercelPathFixMiddleware:
+    """Restores the original request path on Vercel if internal rewrite changed PATH_INFO."""
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        matched_path = environ.get("HTTP_X_MATCHED_PATH")
+        if matched_path:
+            # Vercel supplies the original requested path in HTTP_X_MATCHED_PATH
+            environ["PATH_INFO"] = matched_path
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)
+
+# Locate dataset reliably
+CSV_PATH = os.path.join(ROOT_DIR, "msg.csv")
 if not os.path.exists(CSV_PATH):
-    CSV_PATH = os.path.join(BASE_DIR, "messages.csv")
+    CSV_PATH = os.path.join(ROOT_DIR, "messages.csv")
 if not os.path.exists(CSV_PATH):
     CSV_PATH = "msg.csv" if os.path.exists("msg.csv") else "messages.csv"
 
-# Load dataset and train model
 print(f"Loading dataset from: {CSV_PATH}")
 data = pd.read_csv(CSV_PATH)
 
@@ -45,7 +65,6 @@ predictions = model.predict(X_test)
 accuracy = float(accuracy_score(y_test, predictions))
 
 # Feature importances / trigger word mapping
-# model.classes_ -> ['ham', 'spam']
 ham_class_idx = list(model.classes_).index("ham")
 spam_class_idx = list(model.classes_).index("spam")
 ham_log_probs = model.feature_log_prob_[ham_class_idx]
@@ -55,14 +74,19 @@ vocab = vectorizer.vocabulary_
 print(f"Model initialized! Samples: {total_count} (Spam: {spam_count}, Ham: {ham_count}) | Test Accuracy: {accuracy * 100:.1f}%")
 
 @app.route("/")
+@app.route("/api/index")
+@app.route("/api/index.py")
 def index():
-    return render_template("index.html", 
-                           total_samples=total_count, 
-                           spam_samples=spam_count, 
-                           ham_samples=ham_count, 
-                           accuracy=round(accuracy * 100, 1))
+    return render_template(
+        "index.html", 
+        total_samples=total_count, 
+        spam_samples=spam_count, 
+        ham_samples=ham_count, 
+        accuracy=round(accuracy * 100, 1)
+    )
 
 @app.route("/api/stats", methods=["GET"])
+@app.route("/stats", methods=["GET"])
 def get_stats():
     return jsonify({
         "total_samples": total_count,
@@ -73,6 +97,7 @@ def get_stats():
     })
 
 @app.route("/api/predict", methods=["POST"])
+@app.route("/predict", methods=["POST"])
 def predict():
     try:
         body = request.get_json(force=True, silent=True) or {}
@@ -90,7 +115,6 @@ def predict():
         confidence = float(max(ham_prob, spam_prob) * 100)
 
         # Identify trigger keywords from the input message
-        # Tokenize by alphanumeric words
         tokens = re.findall(r"\b\w+\b", message.lower())
         detected_spam_triggers = []
         detected_ham_indicators = []
