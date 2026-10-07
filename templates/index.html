@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="State-of-the-art AI Spam Message Classifier powered by Multinomial Naive Bayes and NLP. Instant detection with confidence scoring.">
+  <title>SpamGuard AI — Intelligent Message Classifier</title>
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- 3D Interactive Canvas Background -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- Ambient Glow Background Blobs -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+  <div class="app-container">
+    <!-- Header / Nav -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon-wrapper">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">SpamGuard<span class="highlight">AI</span></span>
+          <span class="brand-tag">Multinomial Naive Bayes Engine</span>
+        </div>
+      </div>
+
+      <div class="header-badges">
+        <div class="status-pill" id="engine-status">
+          <span class="status-dot"></span>
+          <span>Engine Online</span>
+        </div>
+        <div class="accuracy-pill" id="engine-accuracy">
+          <span class="pill-label">Test Accuracy</span>
+          <span class="pill-value">{{ accuracy }}%</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      <!-- Hero Intro -->
+      <section class="hero-section">
+        <h1 class="hero-title">Intelligent Message <span class="gradient-text">Spam Detector</span></h1>
+        <p class="hero-subtitle">
+          Real-time Natural Language Processing powered by Naive Bayes classification. Analyze SMS, emails, and alerts for malicious patterns instantly.
+        </p>
+      </section>
+
+      <!-- Interactive 3D Tilt Card -->
+      <section class="card-wrapper" id="card-tilt-wrapper">
+        <div class="glass-card" id="classifier-card">
+          <div class="card-sheen" id="card-sheen"></div>
+
+          <!-- Card Header & Quick Samples -->
+          <div class="card-header">
+            <div class="section-label-group">
+              <span class="badge-icon">⚡</span>
+              <span class="section-label">Input Message</span>
+            </div>
+            <div class="char-counter" id="char-counter">0 chars • 0 words</div>
+          </div>
+
+          <!-- Text Input Form -->
+          <form id="classifier-form" onsubmit="return false;">
+            <div class="textarea-wrapper">
+              <textarea 
+                id="message-input" 
+                rows="4" 
+                placeholder="Type or paste any SMS, email, or message here to analyze..."
+                aria-label="Message to analyze for spam"
+                maxlength="1000"
+              ></textarea>
+              <button type="button" class="clear-btn" id="clear-input-btn" title="Clear text" aria-label="Clear text">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Quick Test Samples -->
+            <div class="samples-container">
+              <span class="samples-label">Quick Test Samples:</span>
+              <div class="samples-grid">
+                <button type="button" class="sample-chip chip-spam" data-sample="Win a free iPhone now! Click here!!">
+                  🎁 Free iPhone
+                </button>
+                <button type="button" class="sample-chip chip-spam" data-sample="Urgent! Your bank account needs verification. Click link.">
+                  ⚠️ Bank Alert
+                </button>
+                <button type="button" class="sample-chip chip-spam" data-sample="Get rich quick! Work from home, earn $5000/day">
+                  💰 $5000/Day Offer
+                </button>
+                <button type="button" class="sample-chip chip-ham" data-sample="Hey, are you coming to class tomorrow?">
+                  📚 Class Schedule
+                </button>
+                <button type="button" class="sample-chip chip-ham" data-sample="I sent you the file over email, check it out.">
+                  📎 Email File
+                </button>
+                <button type="button" class="sample-chip chip-ham" data-sample="The meeting has been rescheduled to Thursday.">
+                  📅 Team Meeting
+                </button>
+              </div>
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="action-bar">
+              <button type="button" class="btn btn-secondary" id="reset-all-btn">
+                Reset
+              </button>
+              <button type="submit" class="btn btn-primary" id="analyze-btn">
+                <span class="btn-spinner" id="btn-spinner" aria-hidden="true"></span>
+                <span class="btn-text" id="btn-text">
+                  <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  Scan Message
+                </span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Result Display Box -->
+          <div class="result-container hidden" id="result-container" aria-live="polite">
+            <div class="divider"></div>
+
+            <div class="result-header">
+              <div class="verdict-banner" id="verdict-banner">
+                <div class="verdict-icon-box" id="verdict-icon-box">
+                  <!-- SVG will be dynamically injected -->
+                </div>
+                <div class="verdict-details">
+                  <div class="verdict-badge" id="verdict-badge">CLASSIFICATION RESULT</div>
+                  <h3 class="verdict-title" id="verdict-title">Spam Detected</h3>
+                  <p class="verdict-desc" id="verdict-desc">High risk phishing or promotional characteristics found.</p>
+                </div>
+              </div>
+
+              <!-- Confidence Radial Dial -->
+              <div class="confidence-dial-wrapper">
+                <div class="dial-container">
+                  <svg class="dial-svg" viewBox="0 0 100 100">
+                    <circle class="dial-track" cx="50" cy="50" r="42"></circle>
+                    <circle class="dial-progress" id="dial-progress-circle" cx="50" cy="50" r="42"></circle>
+                  </svg>
+                  <div class="dial-value-box">
+                    <span class="dial-number" id="dial-percentage">0%</span>
+                    <span class="dial-caption">Confidence</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Probabilities Breakdown Meter -->
+            <div class="metrics-breakdown">
+              <div class="metric-row">
+                <div class="metric-info">
+                  <span class="metric-label spam-color">Spam Probability</span>
+                  <span class="metric-val" id="spam-prob-val">0.0%</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill spam-fill" id="spam-prob-bar" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <div class="metric-info">
+                  <span class="metric-label ham-color">Normal / Legitimate Probability</span>
+                  <span class="metric-val" id="ham-prob-val">0.0%</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill ham-fill" id="ham-prob-bar" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trigger Keywords Section -->
+            <div class="triggers-section" id="triggers-section">
+              <div class="triggers-header">
+                <span class="triggers-title">AI Token Indicators:</span>
+                <span class="triggers-subtitle" id="triggers-subtitle">Detected vocabulary tokens influencing this score</span>
+              </div>
+              <div class="triggers-tags" id="triggers-tags">
+                <!-- Dynamically populated tags -->
+              </div>
+            </div>
+
+            <!-- Copy and Share Actions -->
+            <div class="result-actions">
+              <button type="button" class="btn btn-ghost" id="copy-result-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Report
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Model Stats & Specs Row -->
+      <section class="specs-grid">
+        <div class="spec-card">
+          <div class="spec-icon">📊</div>
+          <div class="spec-content">
+            <span class="spec-label">Trained Dataset</span>
+            <span class="spec-value">{{ total_samples }} Messages</span>
+            <span class="spec-sub">15 Spam • 20 Normal (from msg.csv)</span>
+          </div>
+        </div>
+
+        <div class="spec-card">
+          <div class="spec-icon">🧠</div>
+          <div class="spec-content">
+            <span class="spec-label">Model Algorithm</span>
+            <span class="spec-value">Multinomial Naive Bayes</span>
+            <span class="spec-sub">CountVectorizer Feature Extraction</span>
+          </div>
+        </div>
+
+        <div class="spec-card">
+          <div class="spec-icon">⚡</div>
+          <div class="spec-content">
+            <span class="spec-label">Inference Latency</span>
+            <span class="spec-value">&lt; 5 ms</span>
+            <span class="spec-sub">Zero-latency in-memory inference</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- History of Scanned Messages -->
+      <section class="history-section hidden" id="history-section">
+        <div class="history-header">
+          <h2 class="history-title">Recent Scans</h2>
+          <button type="button" class="clear-history-btn" id="clear-history-btn">Clear History</button>
+        </div>
+        <div class="history-list" id="history-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>SpamGuard AI Engine • Powered by Scikit-Learn & Python Flask</p>
+      <div class="footer-meta">
+        <span>Dataset: <code>msg.csv</code></span>
+        <span>•</span>
+        <span>Local Port: <code>5000</code></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- App Script -->
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
