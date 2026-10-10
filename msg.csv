@@ -1,36 +1,121 @@
 message,label
-"Win a free iPhone now! Click here!!",spam
-"Congratulations! You've won $1000. Claim now.",spam
-"FREE entry to win tickets. Text WIN to 87121",spam
-"You have been selected for a cash prize. Call now.",spam
-"Urgent! Your bank account needs verification. Click link.",spam
+Win a free iPhone now! Click here!!,spam
+Congratulations! You've won $1000. Claim now.,spam
+FREE entry to win tickets. Text WIN to 87121,spam
+You have been selected for a cash prize. Call now.,spam
+Urgent! Your bank account needs verification. Click link.,spam
 "Get rich quick! Work from home, earn $5000/day",spam
-"WINNER!! You have won a weekly prize. Reply YES",spam
-"Limited offer! Buy now and get 90% off. Today only!",spam
-"Your mobile number has won 2 million dollars. Contact us.",spam
-"Claim your free gift now. No purchase necessary!",spam
-"Hot singles in your area! Click to meet them now.",spam
-"You are a lucky winner. Send your details to claim prize.",spam
-"FREE ringtones! Text MUSIC to 87066. 3 tones for free!",spam
-"URGENT: Your account will be suspended. Verify now.",spam
-"Make money fast! Join our network marketing team today.",spam
+WINNER!! You have won a weekly prize. Reply YES,spam
+Limited offer! Buy now and get 90% off. Today only!,spam
+Your mobile number has won 2 million dollars. Contact us.,spam
+Claim your free gift now. No purchase necessary!,spam
+Hot singles in your area! Click to meet them now.,spam
+You are a lucky winner. Send your details to claim prize.,spam
+FREE ringtones! Text MUSIC to 87066. 3 tones for free!,spam
+URGENT: Your account will be suspended. Verify now.,spam
+Make money fast! Join our network marketing team today.,spam
+USPS: Your package delivery has been put on hold due to missing street address. Update here:,spam
+DHL Express: Shipment pending customs fee payment of $2.99. Pay here to release package:,spam
+FedEx: Package tracking notification. Click link to schedule redelivery immediately.,spam
+PayPal Security: Unusual login attempt detected from Russia. Log in here to secure account.,spam
+Chase Bank Alert: Suspicious debit card charge of $849.20 at Walmart. Reply NO or click link to dispute.,spam
+Wells Fargo: Your online banking access has been locked. Verify identity now to restore access.,spam
+Bank of America: Security notice. Unauthorized wire transfer pending. Confirm or cancel now.,spam
+Apple Support: Your iCloud storage is full and backups are paused. Claim 50GB free upgrade today.,spam
+Netflix Alert: Your subscription has expired due to payment failure. Update card details to continue watching.,spam
+"Amazon Prime: Your order #92831 for MacBook Pro was placed. If this wasn't you, click link immediately.",spam
+"Security code: 849201. If you did not request this OTP, cancel transaction immediately at link:",spam
+Refund notice: Your overpayment of $287.50 is ready to be returned. Enter bank info to receive funds.,spam
+Final warning: Your email storage is 99% full. Upgrade quota now to prevent losing incoming emails.,spam
+Urgent notice from Microsoft: Windows license key expired. Click here to reactivate.,spam
+Your Norton Antivirus subscription has renewed for $399.00. Call cancellation desk if unauthorized.,spam
+Geek Squad invoice: $499 auto-deducted from your account. Call our toll-free support to request refund.,spam
+McAfee alert: 5 critical threats detected on your PC. Download antivirus protection now.,spam
+Car warranty alert: Your vehicle manufacturer warranty is expiring. Renew today to avoid repair bills.,spam
+"Pre-approved for a $15,000 personal loan with 0% interest! Apply online in minutes.",spam
+Guaranteed debt relief! Settle your credit card balances for pennies on the dollar. Call now.,spam
+"Fast cash advance up to $2,500 deposited directly into your account today. No credit check!",spam
+Earn passive income! Automated Bitcoin trading algorithm delivers 200% weekly returns. Sign up today.,spam
+"Crypto giveaway! Elon Musk is sending 5,000 ETH to early participants. Connect your wallet now.",spam
+Double your Ethereum instantly! Send 0.5 ETH and receive 1.0 ETH back in 10 minutes.,spam
+Student loan forgiveness program: You qualify to have your entire student debt erased. Enroll now.,spam
+Instant approval mortgage refinancing! Cut your monthly payment in half today. Inquire now.,spam
+Investment opportunity: Join our private real estate syndicate for guaranteed 25% annual return.,spam
+"Dear customer, your credit score has dropped. Click here to check your full report for free.",spam
+Congratulations! You have been awarded a $500 Target shopping gift card. Claim yours here:,spam
+Walmart customer survey: Complete 3 quick questions and receive a complimentary $100 voucher.,spam
+Special discount! Save up to 80% on designer luxury handbags and watches. Shop flash sale now.,spam
+Casino bonus alert! Deposit $20 and play with $200 instantly plus 50 free spins. Claim offer:,spam
+Congratulations! Your entry was drawn in our annual sweepstakes lottery. Wire transfer fee to claim.,spam
+Free sample kit available for a limited time! Just pay $1 for shipping and handling.,spam
+Congratulations winner! Text CASH to 77889 to receive your instant scratch card reward.,spam
+Win a dream holiday to Bali! All-inclusive 7-day luxury vacation for two. Enter contest now.,spam
+"Unclaimed property found in your name! State treasury holding $1,250. Click to collect your funds.",spam
+Act fast! Black Friday secret deals available exclusively for you. Shop now before stock runs out.,spam
+Exclusive job offer: Earn $200-$400 daily testing mobile apps from home. No experience needed.,spam
+Hiring immediately: Remote data entry assistant. Flexible hours and weekly direct deposit.,spam
+Pharmacy online: Cheap FDA-approved prescription medication with discreet overnight shipping.,spam
+Lose 15 pounds in 7 days without diet or exercise! Try the revolutionary keto pill today.,spam
+You have 1 unread message from an admirer nearby. Tap here to view profile and chat.,spam
+"IRS Final Notice: You owe $4,320 in back taxes. Pay now to avoid arrest and legal prosecution.",spam
+Social Security Administration: Your SSN has been flagged for fraudulent activity. Call agent immediately.,spam
 "Hey, are you coming to class tomorrow?",ham
-"Can you send me the notes from today's lecture?",ham
+Can you send me the notes from today's lecture?,ham
 "Mom said dinner is ready, come home soon.",ham
-"I'll meet you at the library at 5pm.",ham
-"Did you finish the assignment? I need help with question 3.",ham
+I'll meet you at the library at 5pm.,ham
+Did you finish the assignment? I need help with question 3.,ham
 "Let's catch up this weekend, it's been a while!",ham
-"Your appointment is confirmed for Monday at 10am.",ham
-"Can you pick up some groceries on your way home?",ham
-"Happy birthday! Hope you have a great day.",ham
-"The meeting has been rescheduled to Thursday.",ham
+Your appointment is confirmed for Monday at 10am.,ham
+Can you pick up some groceries on your way home?,ham
+Happy birthday! Hope you have a great day.,ham
+The meeting has been rescheduled to Thursday.,ham
 "I'm running 10 minutes late, sorry!",ham
 "Thanks for helping me yesterday, really appreciate it.",ham
-"Are you free to study together tonight?",ham
+Are you free to study together tonight?,ham
 "Just checking in, how are you doing?",ham
-"Don't forget we have a test next week.",ham
-"The project submission deadline is extended to Friday.",ham
-"Can we reschedule our call to tomorrow?",ham
+Don't forget we have a test next week.,ham
+The project submission deadline is extended to Friday.,ham
+Can we reschedule our call to tomorrow?,ham
 "I sent you the file over email, check it out.",ham
-"Great work on the presentation today!",ham
-"Let me know when you reach home safely.",ham
+Great work on the presentation today!,ham
+Let me know when you reach home safely.,ham
+"Hey, what time are we meeting up for lunch today?",ham
+"I just got back from the grocery store, got everything on the list.",ham
+"I left my umbrella in your car yesterday, can I grab it sometime this week?",ham
+"The weather is supposed to be really nice on Saturday, want to go for a hike?",ham
+"Our train has been delayed by 20 minutes, will keep you posted on arrival time.",ham
+Happy holidays to you and your family! Hope you enjoy the break.,ham
+"Just finished reading that book you recommended, the ending was amazing!",ham
+Can you forward me Sarah's email address so I can send her the invitation?,ham
+"The doctor's appointment took longer than expected, on my way back now.",ham
+Do you want to split an Uber from the airport or take the subway?,ham
+Reminder that trash and recycling collection is moved to Thursday this week.,ham
+"Dinner was delicious, thanks for hosting us tonight!",ham
+Can you water my plants while I'm away on vacation this weekend?,ham
+The mechanic said the car will be ready for pickup by 4 PM this afternoon.,ham
+Let's meet at the coffee shop across from the station around 11.,ham
+"Hey, did you happen to see where I left my keys this morning?",ham
+"Good luck with your job interview today, you're going to do great!",ham
+Can we push our gym session to 6:30 instead? Traffic is heavy.,ham
+I made extra pasta for dinner if you want to take some for lunch tomorrow.,ham
+The flight landed safely and we just collected our baggage.,ham
+Are we still on for board game night at Mark's place on Saturday?,ham
+"Sorry I missed your call earlier, I was in a meeting. Is everything okay?",ham
+"Let's grab a quick bite after class, starving right now.",ham
+The package we ordered just arrived at the front door.,ham
+Can you send me the Zoom link for the project review meeting?,ham
+Could you please review the attached PDF report when you have a spare moment?,ham
+Let's schedule a quick 15-minute phone call tomorrow morning to align on the deliverables.,ham
+"Thanks so much for the feedback on my essay, it was really helpful.",ham
+Please find attached the updated slides for tomorrow's client presentation.,ham
+Can you bring your laptop charger to the office today? I forgot mine at home.,ham
+"I'll be working remotely from home on Wednesday, ping me on Slack if you need anything.",ham
+"I pushed the latest bug fixes to the development branch, please test when possible.",ham
+Are you free for a quick chat before the team standup meeting?,ham
+"I submitted our group assignment on the portal, let me know if you can see it.",ham
+"I've shared the Google Docs folder with you, you should have edit access now.",ham
+The dentist confirmed your cleaning appointment for next Friday at 2 PM.,ham
+Can you please print two copies of the contract before the meeting starts?,ham
+Let me know your thoughts on the design mockups whenever you get a chance.,ham
+Could you please remind me of the Wi-Fi password in the conference room?,ham
+"I sent the invoice over to accounting, payment should be processed by Friday.",ham

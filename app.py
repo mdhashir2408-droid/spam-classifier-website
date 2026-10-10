@@ -60,7 +60,7 @@ X_vectorized = vectorizer.fit_transform(data["message"])
 y = data["label"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_vectorized, y, test_size=0.2, random_state=42
+    X_vectorized, y, test_size=0.2, random_state=42, stratify=y
 )
 
 model = MultinomialNB()
