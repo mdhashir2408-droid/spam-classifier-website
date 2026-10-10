@@ -20,8 +20,26 @@ app = Flask(
     static_folder=os.path.join(ROOT_DIR, "static")
 )
 
-# Note: On Vercel, requests are routed to api/index.py via rewrites, and Flask's WSGI receives the real request path.
-# Overriding PATH_INFO with HTTP_X_MATCHED_PATH (/api/index.py) broke all API endpoints.
+# WSGI Middleware to restore original request path from __path__ query param (passed by Vercel rewrites)
+class VercelPathRestoreMiddleware:
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        query_string = environ.get("QUERY_STRING", "")
+        if "__path__=" in query_string:
+            import urllib.parse
+            import re
+            params = urllib.parse.parse_qs(query_string, keep_blank_values=True)
+            if "__path__" in params and params["__path__"]:
+                raw_path = params["__path__"][0]
+                if not raw_path.startswith("/"):
+                    raw_path = "/" + raw_path
+                clean_path = re.sub(r"^/+", "/", raw_path)
+                environ["PATH_INFO"] = clean_path
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathRestoreMiddleware(app.wsgi_app)
 
 # Locate dataset reliably
 CSV_PATH = os.path.join(ROOT_DIR, "msg.csv")
@@ -61,19 +79,19 @@ vocab = vectorizer.vocabulary_
 
 print(f"Model initialized! Samples: {total_count} (Spam: {spam_count}, Ham: {ham_count}) | Test Accuracy: {accuracy * 100:.1f}%")
 
-@app.route("/")
-@app.route("/api/index")
-@app.route("/api/index.py")
+@app.route("/", methods=["GET"])
+@app.route("/api/index", methods=["GET", "POST"])
+@app.route("/api/index.py", methods=["GET", "POST"])
 def index():
-    if request.args.get("debug") == "1":
-        return jsonify({
-            "path": request.path,
-            "environ_PATH_INFO": request.environ.get("PATH_INFO"),
-            "environ_REQUEST_URI": request.environ.get("REQUEST_URI"),
-            "environ_RAW_URI": request.environ.get("RAW_URI"),
-            "headers": dict(request.headers),
-            "matching_keys": {k: str(v) for k, v in request.environ.items() if any(x in k for x in ["PATH", "URI", "URL", "ROUTE", "VERCEL", "ORIGINAL", "FORWARDED"])}
-        })
+    # If a POST request reached index (e.g. from /api/predict routed to index.py)
+    if request.method == "POST":
+        return predict()
+    
+    # Check if query parameter indicates stats
+    req_path = request.args.get("__path__", "")
+    if "stats" in req_path:
+        return get_stats()
+
     return render_template(
         "index.html", 
         total_samples=total_count, 
@@ -82,15 +100,15 @@ def index():
         accuracy=round(accuracy * 100, 1)
     )
 
-@app.route("/api/debug", methods=["GET", "POST"])
-def debug_route():
+@app.route("/api/stats", methods=["GET"], strict_slashes=False)
+@app.route("/stats", methods=["GET"], strict_slashes=False)
+def get_stats():
     return jsonify({
-        "path": request.path,
-        "full_path": request.full_path,
-        "environ_path_info": request.environ.get("PATH_INFO"),
-        "environ_request_uri": request.environ.get("REQUEST_URI"),
-        "headers": dict(request.headers),
-        "environ_keys": [k for k in request.environ.keys() if "PATH" in k or "URI" in k or "URL" in k or "ROUTE" in k or "VERCEL" in k]
+        "total_samples": total_count,
+        "spam_samples": spam_count,
+        "ham_samples": ham_count,
+        "accuracy_pct": round(accuracy * 100, 1),
+        "vocabulary_size": len(vocab)
     })
 
 @app.route("/api/predict", methods=["GET", "POST"], strict_slashes=False)

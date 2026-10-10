@@ -2,8 +2,16 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/predict",
+      "destination": "/api/index.py?__path__=/api/predict"
+    },
+    {
+      "source": "/api/stats",
+      "destination": "/api/index.py?__path__=/api/stats"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/api/index.py"
+      "destination": "/api/index.py?__path__=/$1"
     }
   ]
 }
