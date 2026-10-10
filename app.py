@@ -20,20 +20,8 @@ app = Flask(
     static_folder=os.path.join(ROOT_DIR, "static")
 )
 
-# WSGI Middleware for Vercel Serverless routing
-class VercelPathFixMiddleware:
-    """Restores the original request path on Vercel if internal rewrite changed PATH_INFO."""
-    def __init__(self, wsgi_app):
-        self.wsgi_app = wsgi_app
-
-    def __call__(self, environ, start_response):
-        matched_path = environ.get("HTTP_X_MATCHED_PATH")
-        if matched_path:
-            # Vercel supplies the original requested path in HTTP_X_MATCHED_PATH
-            environ["PATH_INFO"] = matched_path
-        return self.wsgi_app(environ, start_response)
-
-app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)
+# Note: On Vercel, requests are routed to api/index.py via rewrites, and Flask's WSGI receives the real request path.
+# Overriding PATH_INFO with HTTP_X_MATCHED_PATH (/api/index.py) broke all API endpoints.
 
 # Locate dataset reliably
 CSV_PATH = os.path.join(ROOT_DIR, "msg.csv")
@@ -96,9 +84,17 @@ def get_stats():
         "vocabulary_size": len(vocab)
     })
 
-@app.route("/api/predict", methods=["POST"])
-@app.route("/predict", methods=["POST"])
+@app.route("/api/predict", methods=["GET", "POST"], strict_slashes=False)
+@app.route("/predict", methods=["GET", "POST"], strict_slashes=False)
 def predict():
+    if request.method == "GET":
+        return jsonify({
+            "status": "online",
+            "endpoint": "/api/predict",
+            "method": "POST",
+            "description": "Send a POST request with JSON payload: {\"message\": \"your text\"}"
+        })
+
     try:
         body = request.get_json(force=True, silent=True) or {}
         message = body.get("message", "").strip()
@@ -145,6 +141,34 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.errorhandler(400)
+def handle_400(e):
+    return jsonify({"error": "Bad request", "details": str(e)}), 400
+
+@app.errorhandler(404)
+def handle_404(e):
+    if request.path.startswith("/api/") or request.path.startswith("/predict") or request.path.startswith("/stats"):
+        return jsonify({"error": f"API endpoint not found: {request.path}"}), 404
+    return render_template(
+        "index.html", 
+        total_samples=total_count, 
+        spam_samples=spam_count, 
+        ham_samples=ham_count, 
+        accuracy=round(accuracy * 100, 1)
+    ), 404
+
+@app.errorhandler(405)
+def handle_405(e):
+    if request.path.startswith("/api/") or request.path.startswith("/predict") or request.path.startswith("/stats"):
+        return jsonify({"error": f"Method {request.method} not allowed for {request.path}"}), 405
+    return "Method Not Allowed", 405
+
+@app.errorhandler(500)
+def handle_500(e):
+    if request.path.startswith("/api/") or request.path.startswith("/predict") or request.path.startswith("/stats"):
+        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+    return "Internal Server Error", 500
 
 if __name__ == "__main__":
     print("\nStarting Spam Classifier Web Server at http://127.0.0.1:5000 ...")

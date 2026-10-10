@@ -233,11 +233,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Evaluation failed');
+        let errorMsg = `Server error (${response.status})`;
+        try {
+          const contentType = response.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const errorData = await response.json();
+            if (errorData && errorData.error) {
+              errorMsg = errorData.error;
+            }
+          } else {
+            const text = await response.text();
+            if (text && !text.trim().startsWith('<')) {
+              errorMsg = text.slice(0, 100);
+            }
+          }
+        } catch (_) {}
+        throw new Error(errorMsg);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (_) {
+        throw new Error('Received unexpected non-JSON response from server.');
+      }
       currentAnalysis = data;
       renderResults(data);
       addToHistory(data);
