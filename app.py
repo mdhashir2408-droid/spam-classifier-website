@@ -65,6 +65,15 @@ print(f"Model initialized! Samples: {total_count} (Spam: {spam_count}, Ham: {ham
 @app.route("/api/index")
 @app.route("/api/index.py")
 def index():
+    if request.args.get("debug") == "1":
+        return jsonify({
+            "path": request.path,
+            "environ_PATH_INFO": request.environ.get("PATH_INFO"),
+            "environ_REQUEST_URI": request.environ.get("REQUEST_URI"),
+            "environ_RAW_URI": request.environ.get("RAW_URI"),
+            "headers": dict(request.headers),
+            "matching_keys": {k: str(v) for k, v in request.environ.items() if any(x in k for x in ["PATH", "URI", "URL", "ROUTE", "VERCEL", "ORIGINAL", "FORWARDED"])}
+        })
     return render_template(
         "index.html", 
         total_samples=total_count, 
@@ -73,15 +82,15 @@ def index():
         accuracy=round(accuracy * 100, 1)
     )
 
-@app.route("/api/stats", methods=["GET"])
-@app.route("/stats", methods=["GET"])
-def get_stats():
+@app.route("/api/debug", methods=["GET", "POST"])
+def debug_route():
     return jsonify({
-        "total_samples": total_count,
-        "spam_samples": spam_count,
-        "ham_samples": ham_count,
-        "accuracy_pct": round(accuracy * 100, 1),
-        "vocabulary_size": len(vocab)
+        "path": request.path,
+        "full_path": request.full_path,
+        "environ_path_info": request.environ.get("PATH_INFO"),
+        "environ_request_uri": request.environ.get("REQUEST_URI"),
+        "headers": dict(request.headers),
+        "environ_keys": [k for k in request.environ.keys() if "PATH" in k or "URI" in k or "URL" in k or "ROUTE" in k or "VERCEL" in k]
     })
 
 @app.route("/api/predict", methods=["GET", "POST"], strict_slashes=False)
